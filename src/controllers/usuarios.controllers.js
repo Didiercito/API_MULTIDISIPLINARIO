@@ -1,6 +1,7 @@
 const Usuario = require('../models/usuarios.models');
 const carritoControllers = require('../controllers/carrito.contollers');
 const Producto = require('../models/productos.models');
+const {ObjetId} = require('mongoose').Types
 
 const getUsuario = async (req, res) => {
     try {
@@ -91,27 +92,27 @@ const searchUserByName = async (req, res) => {
 };
 
 const addToCart = async (req, res) => {
-    const { id_usuario, id_producto, cantidad } = req.body;
+  const { id_usuario, id_producto, cantidad } = req.body;
 
-    try {
-        const usuarioExistente = await Usuario.findById(id_usuario);
-        const productoExistente = await Producto.findById(id_producto);
+  try {
+      const usuarioExistente = await Usuario.findById(id_usuario);
+      const productoExistente = await Producto.findById(ObjectId(id_producto)); 
 
-        if (!usuarioExistente || !productoExistente) {
-            return res.status(404).json({ error: 'Usuario o producto no encontrado' });
-        }
+      if (!usuarioExistente || !productoExistente) {
+          return res.status(404).json({ error: 'Usuario o producto no encontrado' });
+      }
 
-        const carritoResponse = await carritoControllers.addToCart({
-            id_usuario,
-            id_producto,
-            cantidad
-        });
+      const carritoResponse = await carritoControllers.addToCart({
+          id_usuario,
+          id_producto: ObjectId(id_producto), 
+          cantidad
+      });
 
-        res.json(carritoResponse);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al agregar producto al carrito' });
-    }
+      res.json(carritoResponse);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al agregar producto al carrito' });
+  }
 };
 
 module.exports = {
