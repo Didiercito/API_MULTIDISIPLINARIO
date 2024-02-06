@@ -1,7 +1,7 @@
 const Usuario = require('../models/usuarios.models');
-const carritoControllers = require('../controllers/carrito.contollers');
+const carritoControllers = require('./carrito.contollers');
 const Producto = require('../models/productos.models');
-const {ObjetId} = require('mongoose').Types
+const { ObjectId } = require('mongoose').Types;
 
 const getUsuario = async (req, res) => {
     try {
@@ -91,28 +91,73 @@ const searchUserByName = async (req, res) => {
     }
 };
 
-const addToCart = async (req, res) => {
-  const { id_usuario, id_producto, cantidad } = req.body;
-
+   const addToCart = async (req, res) => {
   try {
-      const usuarioExistente = await Usuario.findById(id_usuario);
-      const productoExistente = await Producto.findById(ObjectId(id_producto)); 
+    const { id_usuario, id_producto, cantidad } = req.body;
+    const usuarioExistente = await Usuario.findById(id_usuario);
+    const productoExistente = await Producto.findById(id_producto);
 
-      if (!usuarioExistente || !productoExistente) {
-          return res.status(404).json({ error: 'Usuario o producto no encontrado' });
-      }
+    if (!usuarioExistente || !productoExistente) {
+      return res.status(404).json({ error: 'Usuario o producto no encontrado' });
+    }
 
-      const carritoResponse = await carritoControllers.addToCart({
-          id_usuario,
-          id_producto: ObjectId(id_producto), 
-          cantidad
-      });
+    let carrito = await Carrito.findOne({ id_usuario });
 
-      res.json(carritoResponse);
+    if (!carrito) {
+      carrito = await crearNuevoCarrito(id_usuario, productoExistente, cantidad);
+    } else {
+      actualizarCarrito(carrito, productoExistente, cantidad);
+    }
+
+    res.json(carrito);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error al agregar producto al carrito' });
+    console.error(error);
+    res.status(500).json({ error: 'Error al agregar producto al carrito' });
   }
+};
+
+const crearNuevoCarrito = async (id_usuario, productoExistente, cantidad) => {
+  const nuevoCarrito = new Carrito({
+    id_usuario,
+    productos: [{ producto: productoExistente._id, cantidad }]
+  });
+
+  await nuevoCarrito.save();
+  return nuevoCarrito;
+};
+
+const actualizarCarrito = (carrito, productoExistente, cantidad) => {
+  const productoEnCarrito = carrito.productos.find(
+    (item) => item.producto.toString() === productoExistente._id.toString()
+  );
+
+  if (productoEnCarrito) {
+    productoEnCarrito.cantidad += cantidad;
+  } else {
+    carrito.productos.push({ producto: productoExistente._id, cantidad });
+  }
+
+  return carrito.save();
+};
+
+
+
+
+const getUsuarioById = async (req, res) => {
+    const idUsuario = req.params.id_usuario;
+
+    try {
+        const usuario = await Usuario.findOne({ id_usuario: idUsuario });
+
+        if (!usuario) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        } else {
+            res.json(usuario);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener usuario por ID' });
+    }
 };
 
 module.exports = {
@@ -121,5 +166,6 @@ module.exports = {
     updateUsuario,
     deleteUsuario,
     searchUserByName,
-    addToCart
+    addToCart,
+    getUsuarioById
 };

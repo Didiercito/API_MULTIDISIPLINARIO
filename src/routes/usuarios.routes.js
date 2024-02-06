@@ -4,14 +4,16 @@
 
     router.get('/', usuarioControllers.getUsuario);
 
+    router.get('/buscar/:letra', usuarioControllers.searchUserByName);
+
+    router.get('/:id_usuario', usuarioControllers.getUsuarioById);
+
     router.post('/', usuarioControllers.createUsuario);
 
     router.put('/:id_usuario', usuarioControllers.updateUsuario);
 
     router.delete('/:id_usuario', usuarioControllers.deleteUsuario);
 
-    router.get('/buscar/:letra', usuarioControllers.searchUserByName);
-
-    router.post('/:id_usuario/agregar-carrito', usuarioControllers.addToCart);
+    router.post('/:id_usuario/agregar-carrito/:id_producto', usuarioControllers.addToCart);
 
     module.exports = router;

@@ -17,7 +17,6 @@ const usuarioSchema = new Schema({
   },
   contrasena: {
     type: String,
-    unique: true,
     required: true
   },
   telefono: {
@@ -31,6 +30,10 @@ const usuarioSchema = new Schema({
     type: String,
     unique: true,
     required: true
+  },
+  carrito: {
+    type: Schema.Types.ObjectId,
+    ref: 'Carrito'
   }
 });
 

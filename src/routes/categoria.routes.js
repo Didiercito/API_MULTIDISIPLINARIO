@@ -7,6 +7,8 @@ router.get('/', categoriaControllers.getCategoria);
 
 router.post('/', categoriaControllers.createCategoria);
 
+router.delete ('/:id_categoria', categoriaControllers.deleteCategoria);
+
 
 
 

@@ -27,7 +27,7 @@ const createProducto = async (req, res) => {
             descripcion,
             caracteristicas,
             id_categoria: categoriaExistente.id_categoria,
-            nombre_producto, // Asegúrate de que nombre_producto esté presente en req.body
+            nombre_producto,
             id_producto,
             cantidad
         });
@@ -87,8 +87,10 @@ const deleteProducto = async (req, res) => {
         if (!productoEliminado) {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
+        else{
+            res.json({message: 'Producto eliminado correctamente', productoEliminado});
+        }
 
-        res.json(productoEliminado);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al eliminar el producto' });

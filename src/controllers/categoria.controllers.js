@@ -12,11 +12,11 @@ const getCategoria = async (req,res) => {
 
 
 const createCategoria = async (req, res) => {
-    const { id_categoria, nombre, descripcion } = req.body;
+    const { id_categoria, nombre_categoria, descripcion } = req.body;
   
     const nuevaCategoria = new Categoria({
       id_categoria,
-      nombre,
+      nombre_categoria,
       descripcion
     });
   

@@ -1,11 +1,9 @@
-// carrito.models.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const carritoSchema = new Schema({
-  usuario: {
-    type: Schema.Types.ObjectId,
-    ref: 'Usuario',
+  id_usuario: {
+    type: String,
     required: true
   },
   productos: [

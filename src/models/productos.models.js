@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Categoria = require('./categoria.models');
 
 const productoSchema = new Schema({
     imagen: {

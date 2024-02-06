@@ -7,7 +7,7 @@ const categoriaSchema = new Schema({
         required: true,
         unique: true
     },
-    nombre: {
+    nombre_categoria: {
         type: String,
         required: true
     },
